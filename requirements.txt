@@ -2,5 +2,3 @@ langchain
 dotenv
 langchain-community
 langchain-ollama
-llama-cpp-python
-huggingface-hub

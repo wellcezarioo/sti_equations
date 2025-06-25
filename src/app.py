@@ -1,16 +1,12 @@
 # TODO: Use Case 01: Evaluate a equation and give the step by step solution with a GUI
 
 import asyncio
-import multiprocessing
-import subprocess
 
 from langchain_ollama import ChatOllama
-from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import PromptTemplate
-from llama_cpp import Llama
+from solver import get_equation_solve_steps
 
 
-MODEL_PATH = "models/Gemma-3-Gaia-PT-BR-4b-it.i1-Q4_K_M.gguf"
 MODEL_NAME = "gemma3"
 
 REWRITE_STEPS_PROMPT = """
@@ -42,17 +38,10 @@ async def rewrite_steps():
 
     chain = prompt_template | model
 
-    response = chain.astream({"mathsteps": test_solve("2x + 3x + 1.5x + 3.2x = 35.7")})
+    response = chain.astream({"mathsteps": get_equation_solve_steps("2x + 3x + 1.5x + 3.2x = 35.7")})
 
     async for token in response:
         print(token.content, end="", flush=True)
-
-def test_solve(equation: str):
-    result = subprocess.run(["node", "ext/js/index.js", f"{equation}"], capture_output=True, text=True)
-
-    print(result.stdout)
-    
-    return result.stdout
 
 async def extract_equations(user_message: str):
     model = ChatOllama(model=MODEL_NAME, temperature=0.1)
@@ -79,7 +68,7 @@ async def extract_and_solve(user_message: str):
     prompt_template_solve = PromptTemplate.from_template(REWRITE_STEPS_PROMPT)
     chain_solve = prompt_template_solve | model
 
-    response = chain_solve.astream({"mathsteps": test_solve(response_extract.content)})
+    response = chain_solve.astream({"mathsteps": get_equation_solve_steps(response_extract.content)})
     
     async for token in response:
         print(token.content, end="", flush=True)
@@ -102,4 +91,6 @@ if __name__ == "__main__":
     # asyncio.run(extract_equations(user_message))
     
     asyncio.run(extract_and_solve(user_message))
+
+    # print(get_equation_solve_steps("2x + 3x + 1.5x + 3.2x = 35.7"))
     
