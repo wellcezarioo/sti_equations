@@ -2,3 +2,5 @@ langchain
 dotenv
 langchain-community
 langchain-ollama
+streamlit
+sympy
