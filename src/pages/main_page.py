@@ -3,7 +3,7 @@ import streamlit as st
 import solver
 
 from pages.problems import set_random_problem
-from streamlit_app import get_data
+from streamlit_app import get_data, save_data
 
 change_type_tips = {
     # Transformações diretamente usadas para isolar x
@@ -65,26 +65,29 @@ if st.session_state.current_problem == "":
 
 # Função para exibir uma dica (simulação)
 def mostrar_dica():
+    # Reset hint_pos to 0 if it's at or beyond the last hint
+    if st.session_state.hint_pos >= len(st.session_state.solution_steps):
+        st.session_state.hint_pos = 0
+
+    # Display the current hint
     st.info(change_type_tips[st.session_state.solution_steps[st.session_state.hint_pos]["changeType"]])
 
-    if st.session_state.hint_pos < len(st.session_state.solution_steps):
-        st.session_state.hint_pos += 1
-    else :
-        st.session_state.hint_pos = 0
+    # Increment hint_pos for the next hint
+    st.session_state.hint_pos += 1
 
 @st.dialog("Solução")
 def display_result(result):
     if result:
         map_difficult = {
             1: "Fácil",
-            2: "Médio",
+            2: "Intermediário",
             3: "Difícil"
         }
 
         st.balloons()
         user_data = get_data()
         pontos = 5 * st.session_state.problem_difficulty - (st.session_state.hint_pos + 1)
-        user_data["pontos"] += 5 * st.session_state.problem_difficulty - (st.session_state.hint_pos + 1)
+        user_data["pontos"] += pontos
         user_data["resolvidos"] += 1
         user_data["por_dificuldade"][map_difficult[st.session_state.problem_difficulty]] += 1
         save_data(user_data)
