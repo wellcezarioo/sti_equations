@@ -15,9 +15,4 @@ const inputEquation = args[0];
 const steps = mathsteps.solveEquation(inputEquation);
 
 // Exibe os passos
-steps.forEach(step => {
-    console.log("before change: " + step.oldEquation.ascii());
-    console.log("change: " + step.changeType);
-    console.log("after change: " + step.newEquation.ascii());
-    console.log("# of substeps: " + step.substeps.length);
-});
+console.log(JSON.stringify(steps))

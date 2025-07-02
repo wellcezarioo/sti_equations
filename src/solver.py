@@ -2,6 +2,7 @@
 This module implements a wrapper of mathsteps library in /ext/js/
 """
 import subprocess
+import json
 from sympy import *
 
 MATHSTEPS_LIBRARY_PATH = './ext/js/mathsteps/index.js'
@@ -9,9 +10,13 @@ MATHSTEPS_LIBRARY_PATH = './ext/js/mathsteps/index.js'
 def get_equation_solve_steps(equation: str):
     result = subprocess.run(["node", f"{MATHSTEPS_LIBRARY_PATH}", f"{equation}"], capture_output=True, text=True)
 
-    print(result.stdout)
+    try:
+        result_json = json.loads(result.stdout)
+    except json.decoder.JSONDecodeError:
+        result_json = None
+        print("Error loading steps return")
 
-    return result.stdout
+    return result_json
 
 def get_equation_solution(equation: str, variable: str):
     x = symbols(variable)
@@ -24,6 +29,7 @@ def get_equation_solution(equation: str, variable: str):
     res = solve(eq, x)
 
     return res[0]
+
 
 if __name__ == "__main__":
     print(get_equation_solve_steps("2*x + 3 = 7"))
