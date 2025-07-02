@@ -62,23 +62,7 @@ if "solution_steps" not in st.session_state:
         {"changeType": "SIMPLIFY_ARITHMETIC", "changeGroup": "SIMPLIFY_ARITHMETIC", "substeps": []}
     ]
 
-<<<<<<< Updated upstream
-=======
-# Função para gerar novo problema (simulação)
-def gerar_novo_problema():
-    # Aqui você pode integrar com um gerador real depois
-    st.session_state.current_problem = "3x - 4 = 5"
-    st.session_state.solve_for = "x"
-    st.session_state.user_answer = ""
-    st.session_state.solution_steps = [
-        {"changeType": "ADD_TO_BOTH_SIDES", "changeGroup": "ADD_TO_BOTH_SIDES", "substeps": []},
-        {"changeType": "SIMPLIFY_ARITHMETIC", "changeGroup": "SIMPLIFY_ARITHMETIC", "substeps": []},
-        {"changeType": "DIVIDE_FROM_BOTH_SIDES", "changeGroup": "DIVIDE_FROM_BOTH_SIDES", "substeps": []},
-        {"changeType": "SIMPLIFY_ARITHMETIC", "changeGroup": "SIMPLIFY_ARITHMETIC", "substeps": []}
-    ]
-    st.session_state.hint_pos = 0
 
->>>>>>> Stashed changes
 # Função para exibir uma dica (simulação)
 def mostrar_dica():
     num_dicas = len(st.session_state.solution_steps)
@@ -110,13 +94,8 @@ with st.container(border=True):
     st.caption(f"**Resolva para:** `{st.session_state.solve_for}`")
 
     with st.form('problem'):
-<<<<<<< Updated upstream
         st.session_state.user_answer = st.text_input("Sua resposta:", st.session_state.user_answer)
         submit = st.form_submit_button('Enviar solução')
-=======
-        st.text_input("Sua resposta:", key="user_answer")
-        submit = st.form_submit_button('Submit')
->>>>>>> Stashed changes
 
     if submit:
         user_input = st.session_state.user_answer.strip()
@@ -141,11 +120,6 @@ with st.container(border=True):
             mostrar_dica()
 
     with col2:
-<<<<<<< Updated upstream
         if st.button("🔄 Novo problema"):
             set_random_problem()
-=======
-        if st.button("🔄 Novo problema", on_click=gerar_novo_problema):
-            pass
->>>>>>> Stashed changes
 
