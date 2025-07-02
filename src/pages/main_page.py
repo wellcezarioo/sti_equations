@@ -3,6 +3,7 @@ import streamlit as st
 import solver
 
 from pages.problems import set_random_problem
+from streamlit_app import get_data
 
 change_type_tips = {
     # Transformações diretamente usadas para isolar x
@@ -47,26 +48,49 @@ st.sidebar.markdown("# Main page 🎈")
 
 # Inicializa estados
 if "current_problem" not in st.session_state:
-    st.session_state.current_problem = "2*x + 3 = 7"
+    st.session_state.current_problem = ""
 if "solve_for" not in st.session_state:
-    st.session_state.solve_for = "x"
+    st.session_state.solve_for = ""
 if "user_answer" not in st.session_state:
     st.session_state.user_answer = ""
 if "hint_pos" not in st.session_state:
     st.session_state.hint_pos = 0
 if "solution_steps" not in st.session_state:
     st.session_state.solution_steps = solver.get_equation_solve_steps(st.session_state.current_problem)
+if "problem_difficulty" not in st.session_state:
+    st.session_state.problem_difficulty = 1
+
+if st.session_state.current_problem == "":
+    set_random_problem()
 
 # Função para exibir uma dica (simulação)
 def mostrar_dica():
     st.info(change_type_tips[st.session_state.solution_steps[st.session_state.hint_pos]["changeType"]])
-    st.session_state.hint_pos += 1
+
+    if st.session_state.hint_pos < len(st.session_state.solution_steps):
+        st.session_state.hint_pos += 1
+    else :
+        st.session_state.hint_pos = 0
 
 @st.dialog("Solução")
 def display_result(result):
     if result:
+        map_difficult = {
+            1: "Fácil",
+            2: "Médio",
+            3: "Difícil"
+        }
+
+        st.balloons()
+        user_data = get_data()
+        pontos = 5 * st.session_state.problem_difficulty - (st.session_state.hint_pos + 1)
+        user_data["pontos"] += 5 * st.session_state.problem_difficulty - (st.session_state.hint_pos + 1)
+        user_data["resolvidos"] += 1
+        user_data["por_dificuldade"][map_difficult[st.session_state.problem_difficulty]] += 1
         st.success("Parabéns. Solução correta. Tente um novo problema.")
+        st.info(f"Pontos ganhos: {pontos}")
         set_random_problem()
+
     else:
         st.error("Solução incorreta. Tente novamente, ou utilize dicas.")
 

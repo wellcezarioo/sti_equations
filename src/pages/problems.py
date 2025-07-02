@@ -43,11 +43,12 @@ equation_sets = {
     ]
 }
 
-def set_new_problem(equation: str, variable: str):
+def set_new_problem(equation: str, variable: str, difficulty: int):
     st.session_state.current_problem = equation
     st.session_state.solve_for = variable
     st.session_state.solution_steps = solver.get_equation_solve_steps(st.session_state.current_problem)
     st.session_state.hint_pos = 0
+    st.session_state.problem_difficulty = difficulty
 
 def set_random_problem():
     difficult = random.randint(1, 3)
@@ -64,6 +65,7 @@ def set_random_problem():
     st.session_state.solve_for = problem['variable']
     st.session_state.solution_steps = solver.get_equation_solve_steps(st.session_state.current_problem)
     st.session_state.hint_pos = 0
+    st.session_state.problem_difficulty = difficult
 
 # Interface Streamlit
 st.title("Problemas de Equações Lineares")
@@ -79,7 +81,13 @@ for i, item in enumerate(equation_sets[nivel]):
         st.caption(f"**Resolva para:** `{item['variable']}`")
 
         if st.button("Resolver", key=i):
-            set_new_problem(item['equation'], item['variable'])
+            map_difficult_to_int = {
+                "Fácil": 1,
+                "Médio": 2,
+                "Difícil": 3
+            }
+
+            set_new_problem(item['equation'], item['variable'], map_difficult_to_int[nivel])
 
             st.switch_page("pages/main_page.py")
 
