@@ -1,0 +1,48 @@
+streamlit.errors.StreamlitDuplicateElementKey: There are multiple elements with the same `key='set'`. To fix this, please make sure that the `key` argument is unique for each element you create.
+
+File "C:\Users\WellingtonSantos\Documents\GitHub\sti_equations\src\streamlit_app.py", line 27, in save_data
+    cookie_manager.set(
+    ~~~~~~~~~~~~~~~~~~^
+        "progresso",
+        ^^^^^^^^^^^^
+        json.dumps(data),
+        ^^^^^^^^^^^^^^^^^
+        expires_at=datetime.datetime.now() + datetime.timedelta(days=30)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+File "C:\Users\WellingtonSantos\AppData\Local\Programs\Python\Python313\Lib\site-packages\extra_streamlit_components\CookieManager\__init__.py", line 71, in set
+    self.cookie_manager(
+    ~~~~~~~~~~~~~~~~~~~^
+        method="set",
+        ^^^^^^^^^^^^^
+    ...<4 lines>...
+        default=False,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+File "C:\Users\WellingtonSantos\AppData\Local\Programs\Python\Python313\Lib\site-packages\streamlit\components\v1\custom_component.py", line 59, in __call__
+    return self.create_instance(
+           ~~~~~~~~~~~~~~~~~~~~^
+        *args,
+        ^^^^^^
+    ...<4 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+File "C:\Users\WellingtonSantos\AppData\Local\Programs\Python\Python313\Lib\site-packages\streamlit\runtime\metrics_util.py", line 443, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+File "C:\Users\WellingtonSantos\AppData\Local\Programs\Python\Python313\Lib\site-packages\streamlit\components\v1\custom_component.py", line 241, in create_instance
+    return_value = marshall_component(dg, element)
+File "C:\Users\WellingtonSantos\AppData\Local\Programs\Python\Python313\Lib\site-packages\streamlit\components\v1\custom_component.py", line 204, in marshall_component
+    computed_id = compute_and_register_element_id(
+        "component_instance",
+    ...<3 lines>...
+        url=self.url,
+    )
+File "C:\Users\WellingtonSantos\AppData\Local\Programs\Python\Python313\Lib\site-packages\streamlit\elements\lib\utils.py", line 254, in compute_and_register_element_id
+    _register_element_id(ctx, element_type, element_id)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\WellingtonSantos\AppData\Local\Programs\Python\Python313\Lib\site-packages\streamlit\elements\lib\utils.py", line 143, in _register_element_id
+    raise StreamlitDuplicateElementKey(user_key)

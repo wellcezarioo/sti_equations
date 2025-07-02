@@ -87,6 +87,7 @@ def display_result(result):
         user_data["pontos"] += 5 * st.session_state.problem_difficulty - (st.session_state.hint_pos + 1)
         user_data["resolvidos"] += 1
         user_data["por_dificuldade"][map_difficult[st.session_state.problem_difficulty]] += 1
+        save_data(user_data)
         st.success("Parabéns. Solução correta. Tente um novo problema.")
         st.info(f"Pontos ganhos: {pontos}")
         set_random_problem()
