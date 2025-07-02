@@ -2,6 +2,8 @@ import streamlit as st
 
 import solver
 
+from pages.problems import set_random_problem
+
 change_type_tips = {
     # Transformações diretamente usadas para isolar x
     "ADD_TO_BOTH_SIDES": "Adicione o mesmo valor aos dois lados da equação.",
@@ -55,27 +57,22 @@ if "hint_pos" not in st.session_state:
 if "solution_steps" not in st.session_state:
     st.session_state.solution_steps = solver.get_equation_solve_steps(st.session_state.current_problem)
 
-# Função para gerar novo problema (simulação)
-def gerar_novo_problema():
-    # Aqui você pode integrar com um gerador real depois
-    st.session_state.current_problem = "3*x - 4 = 5"
-    st.session_state.solve_for = "x"
-    st.session_state.user_answer = ""
-    st.session_state.solution_steps = solver.get_equation_solve_steps(st.session_state.current_problem)
-    st.session_state.hint_pos = 0
-
 # Função para exibir uma dica (simulação)
 def mostrar_dica():
     st.info(change_type_tips[st.session_state.solution_steps[st.session_state.hint_pos]["changeType"]])
     st.session_state.hint_pos += 1
 
-@st.dialog("Cast your vote")
+@st.dialog("Solução")
 def display_result(result):
-    st.write(f'{"Correct" if result else "Incorrect"} solution!')
+    if result:
+        st.success("Parabéns. Solução correta. Tente um novo problema.")
+        set_random_problem()
+    else:
+        st.error("Solução incorreta. Tente novamente, ou utilize dicas.")
 
 with st.container(border=True):
     # Título com emoji
-    st.markdown("### 🧠 Current Problem")
+    st.markdown("### 🧠 Problema Atual")
 
     # Exibição do problema
     st.markdown(f"**Equação:**")
@@ -84,7 +81,7 @@ with st.container(border=True):
 
     with st.form('problem'):
         st.session_state.user_answer = st.text_input("Sua resposta:", st.session_state.user_answer)
-        submit = st.form_submit_button('Submit')
+        submit = st.form_submit_button('Enviar solução')
 
     if submit:
         display_result((solver.get_equation_solution(st.session_state.current_problem, st.session_state.solve_for) - float(st.session_state.user_answer) <= 0.0001))
@@ -98,5 +95,5 @@ with st.container(border=True):
 
     with col2:
         if st.button("🔄 Novo problema"):
-            gerar_novo_problema()
+            set_random_problem()
 
