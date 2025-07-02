@@ -32,7 +32,8 @@ def save_data(data: dict):
 
 @st.fragment
 def reset_data():
-    cookie_manager.delete("progresso")
+    if cookie_manager.get("progresso"):
+        cookie_manager.delete("progresso")
 
 
 
