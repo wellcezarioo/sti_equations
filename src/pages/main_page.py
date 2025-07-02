@@ -5,6 +5,20 @@ import solver
 from pages.problems import set_random_problem
 from streamlit_app import get_data, save_data
 
+def parse_user_input(input_str):
+    try:
+        return float(input_str)
+    except ValueError:
+        if '/' in input_str:
+            try:
+                numerator, denominator = map(float, input_str.split('/'))
+                if denominator == 0:
+                    return None  # Division by zero
+                return numerator / denominator
+            except ValueError:
+                return None  # Not a valid fraction format
+        return None  # Not a valid number or fraction
+
 change_type_tips = {
     # Transformações diretamente usadas para isolar x
     "ADD_TO_BOTH_SIDES": "Adicione o mesmo valor aos dois lados da equação.",
@@ -112,7 +126,13 @@ with st.container(border=True):
         submit = st.form_submit_button('Enviar solução')
 
     if submit:
-        display_result((solver.get_equation_solution(st.session_state.current_problem, st.session_state.solve_for) - float(st.session_state.user_answer) <= 0.0001))
+        parsed_answer = parse_user_input(st.session_state.user_answer)
+        if parsed_answer is None:
+            st.error("Por favor, insira um número válido ou uma fração (ex: 1/2).")
+        else:
+            display_result(abs(solver.get_equation_solution(st.session_state.current_problem, st.session_state.solve_for) - parsed_answer) <= 0.0001)
+            if abs(solver.get_equation_solution(st.session_state.current_problem, st.session_state.solve_for) - parsed_answer) <= 0.0001:
+                st.session_state.user_answer = ""
 
     # Botões adicionais
     col1, col2 = st.columns(2)
