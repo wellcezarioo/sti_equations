@@ -107,10 +107,14 @@ def display_result(result):
         save_data(user_data)
         st.success("Parabéns. Solução correta. Tente um novo problema.")
         st.info(f"Pontos ganhos: {pontos}")
+
+        # Limpa a resposta e define um novo problema
+        st.session_state.user_answer = ""
         set_random_problem()
 
     else:
         st.error("Solução incorreta. Tente novamente, ou utilize dicas.")
+
 
 with st.container(border=True):
     # Título com emoji
@@ -122,7 +126,7 @@ with st.container(border=True):
     st.caption(f"**Resolva para:** `{st.session_state.solve_for}`")
 
     with st.form('problem'):
-        st.session_state.user_answer = st.text_input("Sua resposta:", st.session_state.user_answer)
+        st.session_state.user_answer = st.text_input("Sua resposta:", key=f"answer_input_{st.session_state.current_problem}")
         submit = st.form_submit_button('Enviar solução')
 
     if submit:
@@ -130,9 +134,14 @@ with st.container(border=True):
         if parsed_answer is None:
             st.error("Por favor, insira um número válido ou uma fração (ex: 1/2).")
         else:
-            display_result(abs(solver.get_equation_solution(st.session_state.current_problem, st.session_state.solve_for) - parsed_answer) <= 0.0001)
-            if abs(solver.get_equation_solution(st.session_state.current_problem, st.session_state.solve_for) - parsed_answer) <= 0.0001:
-                st.session_state.user_answer = ""
+            is_correct = abs(
+                solver.get_equation_solution(st.session_state.current_problem, st.session_state.solve_for) - parsed_answer
+            ) <= 0.0001
+            
+            display_result(is_correct)
+            
+            if is_correct:
+                st.rerun()
 
     # Botões adicionais
     col1, col2 = st.columns(2)
